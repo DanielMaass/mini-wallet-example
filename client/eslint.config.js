@@ -3,8 +3,11 @@ import globals from 'globals'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
 import tseslint from 'typescript-eslint'
-import { globalIgnores } from 'eslint/config'
 
+// Locally define globalIgnores to ignore specified patterns
+function globalIgnores(patterns) {
+  return { ignores: patterns };
+}
 export default tseslint.config([
   globalIgnores(['dist']),
   {
