@@ -1,8 +1,9 @@
 {
-  "name": "client",
-  "private": true,
-  "version": "0.0.0",
+  "name": "mini-wallet-client",
+  "version": "1.0.0",
   "type": "module",
+  "author": "Daniel Maaß",
+  "license": "UNLICENSED",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
