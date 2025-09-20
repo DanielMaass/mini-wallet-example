@@ -10,16 +10,16 @@ const credentialsFile = path.join(dataDir, "credentials.json")
 
 export async function readAllCredentials() {
   try {
-    await fs.access(credentialsFile);
+    const file = await fs.readFile(credentialsFile, "utf8")
+    const list: VerifiableCredential[] = JSON.parse(file)
+    return list
   } catch (err) {
     // File does not exist
     if ((err as NodeJS.ErrnoException).code === "ENOENT") {
-      return [];
+      return []
     }
-    throw err;
+    throw err
   }
-  const list: VerifiableCredential[] = JSON.parse(await fs.readFile(credentialsFile, "utf8"));
-  return list;
 }
 
 export async function writeAllCredentials(arr: VerifiableCredential[]) {
