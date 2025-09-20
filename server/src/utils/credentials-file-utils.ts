@@ -23,5 +23,6 @@ export async function readAllCredentials() {
 }
 
 export async function writeAllCredentials(arr: VerifiableCredential[]) {
+  await fs.mkdir(dataDir, { recursive: true });
   await fs.writeFile(credentialsFile, JSON.stringify(arr, null, 2))
 }
