@@ -1,19 +1,26 @@
 {
-  "name": "refundrebel-server",
+  "name": "mini-wallet-server",
   "version": "1.0.0",
+  "type": "module",
   "main": "index.js",
+  "author": "Daniel Maaß",
+  "license": "UNLICENSED",
   "scripts": {
     "build": "tsc",
     "start": "node dist/server.js",
-    "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/server.ts",
+    "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node -r dotenv/config' src/server.ts",
     "lint": "eslint 'src/**/*.ts'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
-  "license": "UNLICENSED",
-  "type": "module",
-  "description": "",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "fs-extra": "^11.3.2",
+    "jose": "^6.1.0",
+    "morgan": "^1.10.1",
+    "nanoid": "^5.1.5",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
+  },
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
@@ -28,14 +35,5 @@
     "prettier": "^3.6.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2"
-  },
-  "dependencies": {
-    "cors": "^2.8.5",
-    "fs-extra": "^11.3.2",
-    "jose": "^6.1.0",
-    "morgan": "^1.10.1",
-    "nanoid": "^5.1.5",
-    "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^5.0.1"
   }
 }

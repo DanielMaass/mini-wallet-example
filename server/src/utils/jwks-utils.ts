@@ -7,7 +7,6 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const dataDir = path.join(__dirname, "../../data")
 const keysFile = path.join(dataDir, "keys.json")
-
 const KID = process.env.KID || "default-key-id"
 const ISSUER_ID = process.env.ISSUER_ID || "default-issuer-id"
 
