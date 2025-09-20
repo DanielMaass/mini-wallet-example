@@ -7,10 +7,10 @@ const options = {
     info: {
       title: "Mini Wallet Example API",
       version: "1.0.0",
-      description: "API-Dokumentation mit Swagger",
+      description: "API Documentation with Swagger",
     },
   },
-  apis: ["./src/routes/*.ts"], // Pfad zu deinen Route-Dateien
+  apis: ["./src/routes/*.ts"], // Path to your route files
 }
 
 export const swaggerSpec = swaggerJSDoc(options)
