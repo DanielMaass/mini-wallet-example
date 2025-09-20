@@ -74,7 +74,7 @@ export const deleteCredential = async (req: Request, res: Response, next: NextFu
     if (idx === -1) return res.status(404).json({ error: "not_found" })
     const [removed] = all.splice(idx, 1)
     await writeAllCredentials(all)
-    res.json({ ok: true, removed })
+    res.status(204).end()
   } catch (error) {
     next(error)
   }
