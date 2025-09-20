@@ -32,9 +32,6 @@ export async function ensureKeys() {
     console.log("########")
     const publicJwk = await exportJWK(publicKey)
     const privateJwk = await exportJWK(privateKey)
-    if (!KID) {
-      throw new Error("Environment variable KID is not defined")
-    }
     publicJwk.kid = KID
     privateJwk.kid = KID
     await fs.writeFile(keysFile, JSON.stringify({ publicJwk, privateJwk }, null, 2))
