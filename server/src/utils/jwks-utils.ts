@@ -16,20 +16,13 @@ export async function ensureKeys() {
   try {
     const raw = await fs.readFile(keysFile, "utf8")
     const { privateJwk, publicJwk } = JSON.parse(raw)
-    console.log("########")
-    console.log({ raw, privateJwk, publicJwk })
-    console.log("########")
     const privateKey = await importJWK(privateJwk, "EdDSA")
     const publicKey = await importJWK(publicJwk, "EdDSA")
     return { privateKey, publicKey, privateJwk, publicJwk }
   } catch (error) {
-    console.error("### Error reading keys file:", error)
     const { publicKey, privateKey } = await generateKeyPair("Ed25519", {
       extractable: true,
     })
-    console.log("########")
-    console.log({ publicKey, privateKey })
-    console.log("########")
     const publicJwk = await exportJWK(publicKey)
     const privateJwk = await exportJWK(privateKey)
     publicJwk.kid = KID
