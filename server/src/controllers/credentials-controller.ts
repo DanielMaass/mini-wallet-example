@@ -1,7 +1,8 @@
-import { type VerifiableCredential } from "../../../shared/types.ts"
 import { type NextFunction, type Request, type Response } from "express"
 import { CompactSign, compactVerify } from "jose"
+import { VerifiableCredentialSchema, type VerifiableCredential } from "mini-vc-wallet-shared"
 import { nanoid } from "nanoid"
+import { isDeepStrictEqual } from "util"
 import { readAllCredentials, writeAllCredentials } from "../utils/credentials-file-utils.ts"
 import { ensureKeys, issuerMeta } from "../utils/jwks-utils.ts"
 import { nowIso } from "../utils/now-iso.ts"
@@ -83,20 +84,16 @@ export const deleteCredential = async (req: Request, res: Response, next: NextFu
 // verify a credential
 export const verifyCredential = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const credential = req.body || {}
-    const { jws } = credential.proof || {}
-
+    const data = req.body || {}
+    const credential = VerifiableCredentialSchema.parse(data)
+    const { jws } = credential.proof
     const { publicKey } = await ensureKeys()
-
     const { payload, protectedHeader } = await compactVerify(jws, publicKey)
     const decoded = JSON.parse(new TextDecoder().decode(payload))
 
-    // If a credential was provided, ensure payload deep‑equals minus proof
-    if (credential) {
-      const { proof, ...plain } = credential
-      const equal = JSON.stringify(plain) === JSON.stringify(decoded)
-      if (!equal) return res.json({ valid: false, error: "payload_mismatch", header: protectedHeader })
-    }
+    const { proof, ...plain } = credential
+    const equal = isDeepStrictEqual(plain, decoded)
+    if (!equal) return res.json({ valid: false, error: "payload_mismatch", header: protectedHeader })
 
     res.json({ valid: true, header: protectedHeader, payload: decoded })
   } catch (error) {
