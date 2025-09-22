@@ -32,7 +32,7 @@ export function CredentialVerifyPage() {
         <Button onClick={() => navigateTo(-1)} size={"icon"} variant={"outline"}>
           <ArrowLeft />
         </Button>
-        <h1 className="text-2xl font-bold">Credential Details</h1>
+        <h1 className="text-2xl font-bold">Verifiable Credential</h1>
       </div>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <textarea
