@@ -1,7 +1,7 @@
+import { type VerifiableCredential } from "../../../shared/types.ts"
 import { type NextFunction, type Request, type Response } from "express"
 import { CompactSign, compactVerify } from "jose"
 import { nanoid } from "nanoid"
-import type { VerifiableCredential } from "../models/credential.ts"
 import { readAllCredentials, writeAllCredentials } from "../utils/credentials-file-utils.ts"
 import { ensureKeys, issuerMeta } from "../utils/jwks-utils.ts"
 import { nowIso } from "../utils/now-iso.ts"
@@ -83,25 +83,18 @@ export const deleteCredential = async (req: Request, res: Response, next: NextFu
 // verify a credential
 export const verifyCredential = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { credential, jws } = req.body || {}
-    let toVerifyJws = jws
-
-    if (!toVerifyJws) {
-      if (!credential || !credential.proof || !credential.proof.jws) {
-        return res.status(400).json({ valid: false, error: "no_jws" })
-      }
-      toVerifyJws = credential.proof.jws
-    }
+    const credential = req.body || {}
+    const { jws } = credential.proof || {}
 
     const { publicKey } = await ensureKeys()
 
-    const { payload, protectedHeader } = await compactVerify(toVerifyJws, publicKey)
+    const { payload, protectedHeader } = await compactVerify(jws, publicKey)
     const decoded = JSON.parse(new TextDecoder().decode(payload))
 
     // If a credential was provided, ensure payload deep‑equals minus proof
     if (credential) {
-      const { proof, ...bare } = credential
-      const equal = JSON.stringify(bare) === JSON.stringify(decoded)
+      const { proof, ...plain } = credential
+      const equal = JSON.stringify(plain) === JSON.stringify(decoded)
       if (!equal) return res.json({ valid: false, error: "payload_mismatch", header: protectedHeader })
     }
 

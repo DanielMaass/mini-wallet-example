@@ -1,5 +1,5 @@
 {
-  "name": "mini-wallet-server",
+  "name": "mini-vc-wallet-server",
   "version": "1.0.0",
   "type": "module",
   "main": "index.js",
