@@ -1,4 +1,4 @@
-import { type VerifiableCredential } from "@shared/types.ts"
+import { type VerifiableCredential } from "mini-vc-wallet-shared"
 
 export const verifyCredential = (credential: VerifiableCredential) => {
   return fetch("/api/credentials/verify", {
