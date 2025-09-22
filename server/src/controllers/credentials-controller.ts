@@ -85,17 +85,13 @@ export const deleteCredential = async (req: Request, res: Response, next: NextFu
 export const verifyCredential = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const data = req.body || {}
-    console.log("### body data", data)
     const credential = VerifiableCredentialSchema.parse(data)
-    console.log("### parsed credential", credential)
     const { jws } = credential.proof
     const { publicKey } = await ensureKeys()
     const { payload, protectedHeader } = await compactVerify(jws, publicKey)
     const decoded = JSON.parse(new TextDecoder().decode(payload))
-    console.log("### decoded payload", decoded)
 
     const { proof, ...plain } = credential
-    console.log("### plain credential", plain)
     const equal = isDeepStrictEqual(plain, decoded)
     if (!equal) return res.json({ valid: false, error: "payload_mismatch", header: protectedHeader })
 
