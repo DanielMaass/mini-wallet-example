@@ -1,10 +1,10 @@
 import { getCredentials } from "@/api/getCredentials"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Trash } from "lucide-react"
+import type { VerifiableCredential } from "mini-vc-wallet-shared"
 import { useNavigate } from "react-router-dom"
 import { deleteCredentialById } from "../api/deleteCredentialById"
 import { Button } from "../components/ui/button"
-import type { VerifiableCredential } from "@shared/types"
 
 export function CredentialsPage() {
   const navigateTo = useNavigate()

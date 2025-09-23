@@ -1,0 +1,16 @@
+services:
+  server:
+    build:
+      context: .
+      dockerfile: dockerfile
+      target: server
+    ports:
+      - "3000:3000"
+
+  client:
+    build:
+      context: .
+      dockerfile: dockerfile
+      target: client
+    ports:
+      - "5173:80" # Frontend unter http://localhost:5173

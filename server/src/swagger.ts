@@ -1,5 +1,17 @@
-import swaggerJSDoc from "swagger-jsdoc"
-import swaggerUi from "swagger-ui-express"
+// server/src/swagger.ts
+import swaggerJSDoc from "swagger-jsdoc";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Globs für beide Welten: Dev (TS in src) und Prod (JS in dist)
+const apis = [
+  path.resolve(__dirname, "./routes/*.ts"),     // wenn via tsx aus src ausgeführt
+  path.resolve(__dirname, "./routes/*.js"),     // falls mal kompiliert in dist gestartet würde und __dirname zeigt auf dist
+  path.resolve(process.cwd(), "server/src/routes/*.ts"), // Fallback, wenn CWD=Repo-Root ist
+];
 
 const options = {
   definition: {
@@ -9,9 +21,10 @@ const options = {
       version: "1.0.0",
       description: "API Documentation with Swagger",
     },
+    // optional aber praktisch: „Try it out“ benutzt gleich die richtige Base-URL
+    servers: [{ url: "http://localhost:3000" }],
   },
-  apis: ["./src/routes/*.ts"], // Path to your route files
-}
+  apis,
+};
 
-export const swaggerSpec = swaggerJSDoc(options)
-export { swaggerUi }
+export const swaggerSpec = swaggerJSDoc(options);

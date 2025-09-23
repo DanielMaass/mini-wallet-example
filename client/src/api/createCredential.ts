@@ -1,9 +1,7 @@
+import { api } from "../lib/api"
+
 export function createCredential(data: { claims: Record<string, string>; type: string; subject: string }) {
-  return fetch("/api/credentials", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
+  return api.post("/credentials", {
     body: JSON.stringify(data),
   })
 }

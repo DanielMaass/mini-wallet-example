@@ -1,11 +1,8 @@
 import { type VerifiableCredential } from "mini-vc-wallet-shared"
+import { api } from "../lib/api"
 
 export const verifyCredential = (credential: VerifiableCredential) => {
-  return fetch("/api/credentials/verify", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
+  return api.post("/credentials/verify", {
     body: JSON.stringify(credential),
-  }).then((res) => res.json())
+  })
 }

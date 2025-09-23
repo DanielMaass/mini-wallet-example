@@ -3,9 +3,9 @@ import { CompactSign, compactVerify } from "jose"
 import { VerifiableCredentialSchema, type VerifiableCredential } from "mini-vc-wallet-shared"
 import { nanoid } from "nanoid"
 import { isDeepStrictEqual } from "util"
-import { readAllCredentials, writeAllCredentials } from "../utils/credentials-file-utils.ts"
-import { ensureKeys, issuerMeta } from "../utils/jwks-utils.ts"
-import { nowIso } from "../utils/now-iso.ts"
+import { readAllCredentials, writeAllCredentials } from "../utils/credentials-file-utils.js"
+import { ensureKeys, issuerMeta } from "../utils/jwks-utils.js"
+import { nowIso } from "../utils/now-iso.js"
 
 // issue a credential
 export const createCredential = async (req: Request, res: Response, next: NextFunction) => {

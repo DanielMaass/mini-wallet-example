@@ -1,13 +1,13 @@
 {
   "name": "mini-vc-wallet-shared",
   "version": "1.0.0",
+  "private": true,
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
     "dist"
   ],
-  "private": true,
   "exports": {
     ".": {
       "import": "./dist/index.js",
@@ -15,8 +15,8 @@
     }
   },
   "scripts": {
-    "build": "tsc",
-    "prepare": "npm run build"
+    "dev": "tsc -w --preserveWatchOutput",
+    "build": "tsc"
   },
   "dependencies": {
     "zod": "^4.1.11"

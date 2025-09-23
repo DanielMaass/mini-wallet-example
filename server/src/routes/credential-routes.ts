@@ -5,7 +5,7 @@ import {
   getCredentialById,
   getCredentials,
   verifyCredential,
-} from "../controllers/credentials-controller.ts"
+} from "../controllers/credentials-controller.js"
 
 const router = Router()
 

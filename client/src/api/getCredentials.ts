@@ -1,3 +1,5 @@
+import { api } from "../lib/api"
+
 export function getCredentials() {
-  return fetch("/api/credentials").then((res) => res.json())
+  return api.get("/credentials")
 }
