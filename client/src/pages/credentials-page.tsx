@@ -40,8 +40,8 @@ export function CredentialsPage() {
             <p className="grow">Type: {cred.type.join(", ")}</p>
             <p className="grow">IssuerID: {cred.issuer.id}</p>
             <p className="grow">
-              Claims:{" "}
-              {Object.entries(cred.claims)
+              credentialSubject:{" "}
+              {Object.entries(cred.credentialSubject)
                 .map(([key, value]) => {
                   return `${key}: ${value}`
                 })

@@ -24,6 +24,6 @@ export const VerifiableCredentialSchema = z.object({
   type: z.array(z.string()),
   subject: z.string(),
   issuedAt: z.string(),
-  claims: z.record(z.string(), z.unknown()),
+  credentialSubject: z.record(z.string(), z.unknown()),
   proof: CredentialProofSchema,
 })

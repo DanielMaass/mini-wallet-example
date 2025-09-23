@@ -10,7 +10,7 @@ import { nowIso } from "../utils/now-iso.js"
 // issue a credential
 export const createCredential = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { type = ["VerifiableCredential"], claims = {}, subject = "did:example:self" } = req.body || {}
+    const { type = "VerifiableCredential", claims = {"no": "content"}, subject = "did:example:no-set" } = req.body || {}
     const id = nanoid()
     const issuedAt = nowIso()
     const { privateKey, publicJwk } = await ensureKeys()
@@ -18,10 +18,10 @@ export const createCredential = async (req: Request, res: Response, next: NextFu
     const credential = {
       id,
       issuer: issuerMeta(publicJwk),
-      type: Array.isArray(type) ? type : [String(type)],
+      type: ["VerifiableCredential", type],
       subject,
       issuedAt,
-      claims,
+      credentialSubject: claims,
     }
 
     const payload = new TextEncoder().encode(JSON.stringify(credential))
