@@ -1,54 +1,54 @@
-# -------- Base (Dependencies) --------
-FROM node:20-alpine AS base
+# ---------- Deps (prod) ----------
+FROM node:20-alpine AS deps-prod
+WORKDIR /app
+# nur Manifeste -> bestes Caching
+COPY package.json package-lock.json* ./
+COPY client/package.json client/
+COPY server/package.json server/
+COPY shared/package.json shared/
+# Prod-Deps für alle Workspaces
+RUN npm ci --workspaces --include-workspace-root=false --omit=dev
 
-# npm latest
-RUN npm install -g npm@latest
-
+# ---------- Deps (dev) ----------
+FROM node:20-alpine AS deps-dev
 WORKDIR /app
 COPY package.json package-lock.json* ./
 COPY client/package.json client/
 COPY server/package.json server/
 COPY shared/package.json shared/
+# Alle Deps inkl. Dev (brauchen wir zum Bauen: tsc, vite, etc.)
+RUN npm ci --workspaces --include-workspace-root=false
 
-# Install for all workspaces (no root)
-RUN npm ci --workspaces --include-workspace-root=false --install-strategy=shallow
-
-# -------- Build --------
-FROM base AS build
+# ---------- Build ----------
+FROM deps-dev AS build
+# Quellen kopieren
 COPY client/ client/
 COPY server/ server/
 COPY shared/ shared/
+# Build-Reihenfolge ist wichtig
 RUN npm run --workspace shared build
 RUN npm run --workspace server build
 RUN npm run --workspace client build
 
-# -------- Runtime: Server --------
+# ---------- Runtime: Server ----------
 FROM node:20-alpine AS server
-
-# npm latest
-RUN npm install -g npm@latest
-
 WORKDIR /app
 ENV NODE_ENV=production \
-    KID=wallet-ed25519-key-1 \
-    ISSUER_ID=did:example:wallet-1
-COPY --from=build /app/node_modules ./node_modules
-COPY --from=build /app/server/dist ./server/dist
-COPY --from=build /app/shared/dist ./shared/dist
-RUN npm prune --omit=dev
-EXPOSE 3210
+    PORT=3000
+# Prod-NodeModules + Artefakte
+COPY --from=deps-prod /app/node_modules ./node_modules
+COPY --from=build     /app/shared/dist  ./shared/dist
+COPY --from=build     /app/server/dist  ./server/dist
+# 🔧 WICHTIG: package.json des Shared-Pakets mitnehmen,
+# damit der Workspace-Symlink in node_modules korrekt aufgelöst wird
+COPY --from=deps-prod /app/shared/package.json ./shared/package.json
+
+EXPOSE 3000
 CMD ["node", "server/dist/server.js"]
 
-# -------- Runtime: Client --------
-FROM node:20-alpine AS client
-
-# npm latest
-RUN npm install -g npm@latest
-
-WORKDIR /app
-ENV NODE_ENV=production
-COPY --from=build /app/node_modules ./node_modules
-COPY --from=build /app/client/dist ./client/dist
-RUN npm prune --omit=dev
-EXPOSE 5173
-CMD ["npx", "vite", "preview", "--host", "0.0.0.0", "--port", "5173"]
+# ---------- Runtime: Client (nginx) ----------
+FROM nginx:alpine AS client
+# Statisches Frontend deployen
+COPY --from=build /app/client/dist /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
