@@ -1,7 +1,7 @@
 import { promises as fs } from "fs"
+import type { VerifiableCredential } from "mini-vc-wallet-shared"
 import path from "path"
 import { fileURLToPath } from "url"
-import type { VerifiableCredential } from "../models/credential.ts"
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -23,6 +23,6 @@ export async function readAllCredentials() {
 }
 
 export async function writeAllCredentials(arr: VerifiableCredential[]) {
-  await fs.mkdir(dataDir, { recursive: true });
+  await fs.mkdir(dataDir, { recursive: true })
   await fs.writeFile(credentialsFile, JSON.stringify(arr, null, 2))
 }

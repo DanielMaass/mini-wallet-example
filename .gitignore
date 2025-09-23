@@ -37,9 +37,6 @@ bower_components
 # Compiled binary addons (https://nodejs.org/api/addons.html)
 build/Release
 
-# Sample Database
-data/
-
 # Dependency directories
 node_modules/
 jspm_packages/
@@ -143,5 +140,5 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
 
-# MacOS
+#MacOS
 .DS_Store

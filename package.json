@@ -1,0 +1,9 @@
+{
+  "name": "mini-vc-wallet",
+  "private": true,
+  "workspaces": [
+    "client",
+    "server",
+    "shared"
+  ]
+}

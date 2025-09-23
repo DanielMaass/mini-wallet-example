@@ -28,17 +28,19 @@ export function CredentialCreatePage() {
 
   const handleSubmit = async (data: z.infer<typeof createVCSchema>) => {
     const { claims, ...rest } = data
-    const claimsObject = claims.reduce((obj, item) => {
-      obj[item.key] = item.value
-      return obj
-    }, {} as Record<string, string>)
+    const claimsObject = claims.reduce(
+      (obj, item) => {
+        obj[item.key] = item.value
+        return obj
+      },
+      {} as Record<string, string>
+    )
 
-    const response = await createCredential({ claims: claimsObject, ...rest })
-    console.log("Create response:", response)
-    if (response.ok) {
+    try {
+      await createCredential({ claims: claimsObject, ...rest })
       navigateTo("/")
-    } else {
-      console.error("Failed to create credential")
+    } catch (error) {
+      console.error("Failed to create credential:", error)
     }
   }
 

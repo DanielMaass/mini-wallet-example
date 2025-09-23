@@ -1,0 +1,38 @@
+services:
+  server:
+    image: node:20-alpine
+    working_dir: /app
+    environment:
+      NODE_ENV: development
+      KID: wallet-ed25519-key-1
+      ISSUER_ID: did:example:wallet-1
+      NPM_CONFIG_UPDATE_NOTIFIER: "false"
+    # <-- Kein entrypoint, keine Shell: direkt Node-Script starten
+    command: ["node", "scripts/dev-server.mjs"]
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      # keine Host-node_modules hineinmounten (verhindert macOS→Linux Mix)
+      - /app/node_modules
+      - /app/server/node_modules
+      - /app/shared/node_modules
+      - /app/client/node_modules
+
+  client:
+    image: node:20-alpine
+    working_dir: /app
+    environment:
+      NODE_ENV: development
+      NPM_CONFIG_UPDATE_NOTIFIER: "false"
+    command: ["node", "scripts/dev-client.mjs"]
+    ports:
+      - "5173:5173"
+    depends_on:
+      - server
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/server/node_modules
+      - /app/shared/node_modules
+      - /app/client/node_modules
