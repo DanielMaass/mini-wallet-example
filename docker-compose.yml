@@ -2,7 +2,7 @@ services:
   server:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: dockerfile
       target: server
     ports:
       - "3000:3000"
@@ -10,7 +10,7 @@ services:
   client:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: dockerfile
       target: client
     ports:
-      - "5173:80"   # Frontend unter http://localhost:5173
+      - "5173:80" # Frontend unter http://localhost:5173
