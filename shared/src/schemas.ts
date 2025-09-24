@@ -29,7 +29,7 @@ export const CredentialProofSchema = z.object({
   jws: z.string(),
 })
 
-// JSON_LD
+// JSON-LD
 export const VerifiableCredentialSchema = z.object({
   "@context": z.array(z.string()).optional(),
   id: z.string(),
