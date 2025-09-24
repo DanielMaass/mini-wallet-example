@@ -24,14 +24,14 @@ export const CredentialProofSchema = z.object({
     verificationMethod: z.string().optional(),
     jws: z.string(),
 });
-// JSON_LD
+// JSON-LD
 export const VerifiableCredentialSchema = z.object({
     "@context": z.array(z.string()).optional(),
     id: z.string(),
     type: z.array(z.string()),
     issuer: z.string(),
     issuanceDate: z.string(),
-    credentialSubject: z.record(z.string(), z.unknown()),
+    credentialSubject: z.record(z.string(), z.string()),
     proof: CredentialProofSchema,
 });
 export const DataKeysSchema = z.record(z.string(), z.object({

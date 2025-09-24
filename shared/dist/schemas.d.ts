@@ -35,7 +35,7 @@ export declare const VerifiableCredentialSchema: z.ZodObject<{
     type: z.ZodArray<z.ZodString>;
     issuer: z.ZodString;
     issuanceDate: z.ZodString;
-    credentialSubject: z.ZodRecord<z.ZodString, z.ZodUnknown>;
+    credentialSubject: z.ZodRecord<z.ZodString, z.ZodString>;
     proof: z.ZodObject<{
         type: z.ZodLiteral<"Ed25519Signature2018">;
         created: z.ZodOptional<z.ZodString>;
