@@ -1,8 +1,15 @@
+import { Fragment } from "react"
+import { Toaster } from "@/components/ui/sonner"
 import "./App.css"
 import { RouterView } from "./routes"
 
 function App() {
-  return <RouterView />
+  return (
+    <Fragment>
+      <Toaster richColors />
+      <RouterView />
+    </Fragment>
+  )
 }
 
 export default App

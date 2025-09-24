@@ -2,6 +2,7 @@ import { getCredentialById } from "@/api/getCredentialById"
 import { useQuery } from "@tanstack/react-query"
 import { ArrowLeft } from "lucide-react"
 import { useNavigate, useParams } from "react-router-dom"
+import { toast } from "sonner"
 import { Button } from "../components/ui/button"
 
 export function CredentialDetailsPage() {
@@ -15,6 +16,7 @@ export function CredentialDetailsPage() {
   function copyCredential() {
     if (data) {
       navigator.clipboard.writeText(JSON.stringify(data, null, 2))
+      toast.success("Credential copied to clipboard")
     }
   }
 
