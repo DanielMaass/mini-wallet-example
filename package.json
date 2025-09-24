@@ -5,5 +5,9 @@
     "client",
     "server",
     "shared"
-  ]
+  ],
+  "devDependencies": {
+    "typescript": "^5.x",
+    "@types/node": "^24.x"
+  }
 }
