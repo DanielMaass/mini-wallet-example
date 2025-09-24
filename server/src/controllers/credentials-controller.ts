@@ -97,7 +97,7 @@ export const verifyCredential = async (req: Request, res: Response, next: NextFu
     // check for valid credential format
     const credential = VerifiableCredentialSchema.parse(data)
     const { jws } = credential.proof
-    const subjectId = credential.credentialSubject.id ?? ""
+    const subjectId = credential.credentialSubject.id || ""
 
     // check existing issuer
     const { publicKey } = await getCryptoKeysByIssuerId(credential.issuer)
