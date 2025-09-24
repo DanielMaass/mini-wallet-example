@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { ArrowLeft, Plus, Trash } from "lucide-react"
 import { useFieldArray, useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom"
+import { toast } from "sonner"
 import type z from "zod"
 import { createCredential } from "../api/createCredential"
 import { IssuerFormSelect } from "../components/issuer-form-select"
@@ -30,13 +31,17 @@ export function CredentialCreatePage() {
 
   const handleSubmit = async (data: z.infer<typeof createVCSchema>) => {
     const { claims, ...rest } = data
-    const claimsObject = claims.reduce((obj, item) => {
-      obj[item.key] = item.value
-      return obj
-    }, {} as Record<string, string>)
+    const claimsObject = claims.reduce(
+      (obj, item) => {
+        obj[item.key] = item.value
+        return obj
+      },
+      {} as Record<string, string>
+    )
 
     try {
       await createCredential({ claims: claimsObject, ...rest })
+      toast.success("Credential successfully created")
       navigateTo("/")
     } catch (error) {
       console.error("Failed to create credential:", error)

@@ -10,13 +10,13 @@ import { nowIso } from "../utils/now-iso.js"
 // issue a credential
 export const createCredential = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { type = "VerifiableCredential", claims = {"no": "content"}, subject = "", issuer = "" } = req.body || {}
+    const { type = "VerifiableCredential", claims = { no: "content" }, subject = "", issuer = "" } = req.body || {}
     const id = nanoid()
     const issuedAt = nowIso()
     const { privateKey } = await getCryptoKeysByIssuerId(issuer)
-    const {kid} = await issuerMeta(issuer)
+    const { kid } = await issuerMeta(issuer)
 
-    const credential: VerifiableCredential = {
+    const credential: Omit<VerifiableCredential, "proof"> = {
       id,
       issuer,
       type: ["VerifiableCredential", type],
@@ -26,9 +26,7 @@ export const createCredential = async (req: Request, res: Response, next: NextFu
     }
 
     const payload = new TextEncoder().encode(JSON.stringify(credential))
-    const jws = await new CompactSign(payload)
-      .setProtectedHeader({ alg: "EdDSA", kid })
-      .sign(privateKey)
+    const jws = await new CompactSign(payload).setProtectedHeader({ alg: "EdDSA", kid }).sign(privateKey)
 
     const stored: VerifiableCredential = { ...credential, proof: { type: "Ed25519Signature2018", jws } }
 

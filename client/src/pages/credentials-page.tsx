@@ -3,6 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Trash } from "lucide-react"
 import type { VerifiableCredential } from "mini-vc-wallet-shared"
 import { useNavigate } from "react-router-dom"
+import { toast } from "sonner"
 import { deleteCredentialById } from "../api/deleteCredentialById"
 import { Button } from "../components/ui/button"
 
@@ -13,6 +14,11 @@ export function CredentialsPage() {
     queryKey: ["credentials"],
     queryFn: getCredentials,
   })
+
+  function copyCredential(credential: VerifiableCredential) {
+    navigator.clipboard.writeText(JSON.stringify(credential, null, 2))
+    toast.success("Credential copied to clipboard")
+  }
 
   async function deleteCredential(id: string) {
     const response = await deleteCredentialById(id)
@@ -48,6 +54,7 @@ export function CredentialsPage() {
                 .join(", ")}
             </p>
             <Button onClick={() => navigateTo(`/${cred.id}`)}>Details</Button>
+            <Button onClick={() => copyCredential(cred)}>Copy</Button>
             <Button size="icon" variant="destructive" onClick={() => deleteCredential(cred.id)}>
               <Trash />
             </Button>

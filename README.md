@@ -56,6 +56,18 @@ docker compose up --build
 
 ## 📜 Useful Commands
 
+Remove all node_modules
+
+```bash
+rm -rf node_modules client/node_modules server/node_modules shared/node_modules
+```
+
+Stop and remove container in dev mode
+
+```bash
+docker compose -f docker-compose.dev.yml down
+```
+
 Rebuild dependencies from scratch
 
 ```bash
