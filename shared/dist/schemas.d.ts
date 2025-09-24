@@ -24,17 +24,23 @@ export declare const IssuerMetaSchema: z.ZodObject<{
 }, z.core.$strip>;
 export declare const CredentialProofSchema: z.ZodObject<{
     type: z.ZodLiteral<"Ed25519Signature2018">;
+    created: z.ZodOptional<z.ZodString>;
+    proofPurpose: z.ZodOptional<z.ZodString>;
+    verificationMethod: z.ZodOptional<z.ZodString>;
     jws: z.ZodString;
 }, z.core.$strip>;
 export declare const VerifiableCredentialSchema: z.ZodObject<{
+    "@context": z.ZodOptional<z.ZodArray<z.ZodString>>;
     id: z.ZodString;
-    issuer: z.ZodString;
     type: z.ZodArray<z.ZodString>;
-    subject: z.ZodString;
-    issuedAt: z.ZodString;
+    issuer: z.ZodString;
+    issuanceDate: z.ZodString;
     credentialSubject: z.ZodRecord<z.ZodString, z.ZodUnknown>;
     proof: z.ZodObject<{
         type: z.ZodLiteral<"Ed25519Signature2018">;
+        created: z.ZodOptional<z.ZodString>;
+        proofPurpose: z.ZodOptional<z.ZodString>;
+        verificationMethod: z.ZodOptional<z.ZodString>;
         jws: z.ZodString;
     }, z.core.$strip>;
 }, z.core.$strip>;

@@ -12,23 +12,33 @@ export const createCredential = async (req: Request, res: Response, next: NextFu
   try {
     const { type = "VerifiableCredential", claims = { no: "content" }, subject = "", issuer = "" } = req.body || {}
     const id = nanoid()
-    const issuedAt = nowIso()
+    const issuanceDate = nowIso()
     const { privateKey } = await getCryptoKeysByIssuerId(issuer)
     const { kid } = await issuerMeta(issuer)
+    const credentialSubject = { ...claims }
+    if (subject) credentialSubject.id = subject
 
     const credential: Omit<VerifiableCredential, "proof"> = {
       id,
       issuer,
+      issuanceDate,
       type: ["VerifiableCredential", type],
-      subject,
-      issuedAt,
-      credentialSubject: claims,
+      credentialSubject,
     }
 
     const payload = new TextEncoder().encode(JSON.stringify(credential))
     const jws = await new CompactSign(payload).setProtectedHeader({ alg: "EdDSA", kid }).sign(privateKey)
 
-    const stored: VerifiableCredential = { ...credential, proof: { type: "Ed25519Signature2018", jws } }
+    const stored: VerifiableCredential = {
+      ...credential,
+      proof: {
+        type: "Ed25519Signature2018",
+        created: issuanceDate,
+        proofPurpose: "assertionMethod",
+        verificationMethod: `${issuer}#${kid}`,
+        jws,
+      },
+    }
 
     const all = await readAllCredentials()
     all.unshift(stored)
@@ -87,10 +97,11 @@ export const verifyCredential = async (req: Request, res: Response, next: NextFu
     // check for valid credential format
     const credential = VerifiableCredentialSchema.parse(data)
     const { jws } = credential.proof
+    const subjectId = credential.credentialSubject.id ? String(credential.credentialSubject.id) : ""
     // check existing issuer
     const { publicKey } = await getCryptoKeysByIssuerId(credential.issuer)
     // check existing subject
-    await issuerMeta(credential.subject) // throws if not found
+    if (subjectId) await issuerMeta(subjectId) // throws if not found
     // verify signature
     const { payload, protectedHeader } = await compactVerify(jws, publicKey)
     // check payload integrity

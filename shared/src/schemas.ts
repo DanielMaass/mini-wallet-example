@@ -23,15 +23,19 @@ export const IssuerMetaSchema = z.object({
 
 export const CredentialProofSchema = z.object({
   type: z.literal("Ed25519Signature2018"),
+  created: z.string().optional(),
+  proofPurpose: z.string().optional(),
+  verificationMethod: z.string().optional(),
   jws: z.string(),
 })
 
+// JSON_LD
 export const VerifiableCredentialSchema = z.object({
+  "@context": z.array(z.string()).optional(),
   id: z.string(),
-  issuer: z.string(),
   type: z.array(z.string()),
-  subject: z.string(),
-  issuedAt: z.string(),
+  issuer: z.string(),
+  issuanceDate: z.string(),
   credentialSubject: z.record(z.string(), z.unknown()),
   proof: CredentialProofSchema,
 })
