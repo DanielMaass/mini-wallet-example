@@ -4,8 +4,6 @@ services:
     working_dir: /app
     environment:
       NODE_ENV: development
-      KID: wallet-ed25519-key-1
-      ISSUER_ID: did:example:wallet-1
       NPM_CONFIG_UPDATE_NOTIFIER: "false"
     # <-- Kein entrypoint, keine Shell: direkt Node-Script starten
     command: ["node", "scripts/dev-server.mjs"]
