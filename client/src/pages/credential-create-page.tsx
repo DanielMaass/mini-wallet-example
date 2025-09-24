@@ -4,6 +4,7 @@ import { useFieldArray, useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom"
 import type z from "zod"
 import { createCredential } from "../api/createCredential"
+import { IssuerFormSelect } from "../components/issuer-form-select"
 import { Button } from "../components/ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../components/ui/form"
 import { Input } from "../components/ui/input"
@@ -17,7 +18,8 @@ export function CredentialCreatePage() {
     defaultValues: {
       type: "ExampleCredential",
       claims: [{ key: "", value: "" }],
-      subject: "did:example:123",
+      subject: "",
+      issuer: "",
     },
   })
 
@@ -28,13 +30,10 @@ export function CredentialCreatePage() {
 
   const handleSubmit = async (data: z.infer<typeof createVCSchema>) => {
     const { claims, ...rest } = data
-    const claimsObject = claims.reduce(
-      (obj, item) => {
-        obj[item.key] = item.value
-        return obj
-      },
-      {} as Record<string, string>
-    )
+    const claimsObject = claims.reduce((obj, item) => {
+      obj[item.key] = item.value
+      return obj
+    }, {} as Record<string, string>)
 
     try {
       await createCredential({ claims: claimsObject, ...rest })
@@ -53,7 +52,7 @@ export function CredentialCreatePage() {
         <h1 className="text-2xl font-bold">Create new Credential</h1>
       </div>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="flex flex-col gap-4 mx-auto">
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="flex flex-col gap-6 mx-auto">
           <FormField
             control={form.control}
             name={`type`}
@@ -67,68 +66,59 @@ export function CredentialCreatePage() {
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name={`subject`}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Subject</FormLabel>
-                <FormControl>
-                  <Input {...field} placeholder={"Subject"} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          {fields.map((field, index) => (
-            <div key={field.id} className="flex gap-2">
-              <FormField
-                control={form.control}
-                name={`claims.${index}.key`}
-                render={({ field }) => (
-                  <FormItem className="grow">
-                    <FormLabel className={cn(index > 0 ? "sr-only" : "ps-3")}>key</FormLabel>
-                    <FormControl>
-                      <Input {...field} placeholder={"key"} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name={`claims.${index}.value`}
-                render={({ field }) => (
-                  <FormItem className="grow">
-                    <FormLabel className={cn(index > 0 ? "sr-only" : "ps-3")}>value</FormLabel>
-                    <FormControl>
-                      <Input {...field} placeholder={"value"} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button
-                title="delete key-value pair"
-                type="button"
-                size={"icon"}
-                variant="destructive"
-                className={cn(index === 0 && "mt-5.5")}
-                onClick={() => remove(index)}
-              >
-                <Trash />
-              </Button>
-            </div>
-          ))}
-          <Button
-            title="Add new key-value pair"
-            type="button"
-            size={"icon"}
-            variant="outline"
-            onClick={() => append({ key: "", value: "" })}
-          >
-            <Plus />
-          </Button>
+          <IssuerFormSelect name="issuer" label="Issuer" placeholder="Select an issuer" />
+          <IssuerFormSelect name="subject" label="Subject" placeholder="Select a subject" />
+          <div className="space-y-2">
+            {fields.map((field, index) => (
+              <div key={field.id} className="flex gap-2">
+                <FormField
+                  control={form.control}
+                  name={`claims.${index}.key`}
+                  render={({ field }) => (
+                    <FormItem className="grow">
+                      <FormLabel className={cn(index > 0 && "sr-only")}>Key</FormLabel>
+                      <FormControl>
+                        <Input {...field} placeholder={"key"} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name={`claims.${index}.value`}
+                  render={({ field }) => (
+                    <FormItem className="grow">
+                      <FormLabel className={cn(index > 0 && "sr-only")}>Value</FormLabel>
+                      <FormControl>
+                        <Input {...field} placeholder={"value"} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button
+                  title="delete key-value pair"
+                  type="button"
+                  size={"icon"}
+                  variant="destructive"
+                  className={cn(index === 0 && "mt-5.5")}
+                  onClick={() => remove(index)}
+                >
+                  <Trash />
+                </Button>
+              </div>
+            ))}
+            <Button
+              title="Add new key-value pair"
+              type="button"
+              size={"icon"}
+              variant="outline"
+              onClick={() => append({ key: "", value: "" })}
+            >
+              <Plus />
+            </Button>
+          </div>
 
           <Button type="submit">Create new credential</Button>
         </form>

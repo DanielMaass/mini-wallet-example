@@ -145,22 +145,15 @@ router.delete("/credentials/:id", deleteCredential)
  *            credential:
  *              id: "12345"
  *              issuedAt: "2023-10-11T12:34:20Z"
- *              issuer:
- *                id: "default-issuer-id"
- *                kid: "default-key-id"
- *                publicKeyJwk:
- *                  kty: "OKP"
- *                  crv: "Ed25519"
- *                  x: "11qYAYpkpY1v6uXo5G6Vf1h8xU4eX3m7g1bHj7vYzQ"
- *                  kid: "default-key-id"
- *                type: ["VerifiableCredential", "AlumniCredential"]
- *                claims:
- *                  name: "John Doe"
- *                  age: 30
- *                subject: "did:example:self"
- *                proof:
- *                  type: "Ed25519Signature2018"
- *                  jws: "eyJhbGciOiJFZERTQSIsImtpZCI6ImRpZDpleGFtcGxlOnNlbGYjZGVtb0tleSJ9..eyJpZCI6IjEyMzQ1IiwiaXNzdWVyIjp7ImlkIjoiZGlkOmV4YW1wbGU6c2VsZiIsImtpZCI6ImRpZDpleGFtcGxlOnNlbGYjZGVtb0tleSJ9LCJ0eXBlIjpbIlZlcmlmaWFibGVDcmVkZW50aWFsIiwiQWx1bW5pQ3JlZGVudGlhbCJdLCJzdWJqZWN0IjoiZGlkOmV4YW1wbGU6c2VsZiIsImlzc3VlZEF0IjoiMjAyMy0xMC0xMVQxMjozNDoyMFoiLCJjbGFpbXMiOnsibmFtZSI6IkpvaG4gRG9lIiwiYWdlIjozMH19fQ.YWJjMTIz"
+ *              issuer: "did:example:issuer-id"
+ *              subject: "did:example:self"
+ *              type: ["VerifiableCredential", "AlumniCredential"]
+ *              credentialSubject:
+ *                name: "John Doe"
+ *                age: 30
+ *              proof:
+ *                type: "Ed25519Signature2018"
+ *                jws: "eyJhbGciOiJFZERTQSIsImtpZCI6ImRpZDpleGFtcGxlOnNlbGYjZGVtb0tleSJ9..eyJpZCI6IjEyMzQ1IiwiaXNzdWVyIjp7ImlkIjoiZGlkOmV4YW1wbGU6c2VsZiIsImtpZCI6ImRpZDpleGFtcGxlOnNlbGYjZGVtb0tleSJ9LCJ0eXBlIjpbIlZlcmlmaWFibGVDcmVkZW50aWFsIiwiQWx1bW5pQ3JlZGVudGlhbCJdLCJzdWJqZWN0IjoiZGlkOmV4YW1wbGU6c2VsZiIsImlzc3VlZEF0IjoiMjAyMy0xMC0xMVQxMjozNDoyMFoiLCJjbGFpbXMiOnsibmFtZSI6IkpvaG4gRG9lIiwiYWdlIjozMH19fQ.YWJjMTIz"
  *    responses:
  *      200:
  *        description: Verification result

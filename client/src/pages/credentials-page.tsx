@@ -38,10 +38,10 @@ export function CredentialsPage() {
         {data?.map((cred: VerifiableCredential) => (
           <div key={cred.id} className="flex items-center gap-2 p-2 border border-gray-300 rounded mb-2">
             <p className="grow">Type: {cred.type.join(", ")}</p>
-            <p className="grow">IssuerID: {cred.issuer.id}</p>
+            <p className="grow">IssuerID: {cred.issuer}</p>
             <p className="grow">
-              Claims:{" "}
-              {Object.entries(cred.claims)
+              credentialSubject:{" "}
+              {Object.entries(cred.credentialSubject)
                 .map(([key, value]) => {
                   return `${key}: ${value}`
                 })

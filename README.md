@@ -47,12 +47,10 @@ docker compose up --build
 
 ## 🔑 Environment Variables
 
-| Variable  | Default              | Description                               |
-| --------- | -------------------- | ----------------------------------------- |
-| PORT      | 3000                 | Port for the server                       |
-| NODE_ENV  | development          | Node environment (development/production) |
-| KID       | wallet-ed25519-key-1 | Key ID for wallet keys                    |
-| ISSUER_ID | did:example:wallet-1 | Example issuer DID                        |
+| Variable | Default     | Description                               |
+| -------- | ----------- | ----------------------------------------- |
+| PORT     | 3000        | Port for the server                       |
+| NODE_ENV | development | Node environment (development/production) |
 
 👉 In Docker Compose these variables are automatically injected (see docker-compose.dev.yml and docker-compose.yml).
 
