@@ -1,5 +1,6 @@
 import { promises as fs } from "fs"
-import { exportJWK, generateKeyPair, importJWK, type JWK_OKP_Public } from "jose"
+import { importJWK, type JWK_OKP_Public } from "jose"
+import { issuers, type DataIssuer } from "mini-vc-wallet-shared"
 import path from "path"
 import { fileURLToPath } from "url"
 
@@ -7,34 +8,29 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const dataDir = path.join(__dirname, "../../data")
 const keysFile = path.join(dataDir, "keys.json")
-const KID = process.env.KID || "default-key-id"
-const ISSUER_ID = process.env.ISSUER_ID || "default-issuer-id"
 
-export async function ensureKeys() {
-  await fs.mkdir(dataDir, { recursive: true })
+export async function getCryptoKeysByIssuerId(id:string) {
   try {
+    await fs.mkdir(dataDir, { recursive: true })
     const raw = await fs.readFile(keysFile, "utf8")
-    const { privateJwk, publicJwk } = JSON.parse(raw)
+    const dataKeys = JSON.parse(raw)
+    const { privateJwk, publicJwk } = dataKeys[id] || {}
     const privateKey = await importJWK(privateJwk, "EdDSA")
     const publicKey = await importJWK(publicJwk, "EdDSA")
     return { privateKey, publicKey, privateJwk, publicJwk }
   } catch (error) {
-    const { publicKey, privateKey } = await generateKeyPair("Ed25519", {
-      extractable: true,
-    })
-    const publicJwk = await exportJWK(publicKey)
-    const privateJwk = await exportJWK(privateKey)
-    publicJwk.kid = KID
-    privateJwk.kid = KID
-    await fs.writeFile(keysFile, JSON.stringify({ publicJwk, privateJwk }, null, 2))
-    return { privateKey, publicKey, privateJwk, publicJwk }
+    throw new Error(`No keys found for issuer id: ${id}`)
   }
 }
 
-export function issuerMeta(publicJwk: JWK_OKP_Public) {
+export async function issuerMeta(id: string) {
+  const issuer = issuers.find((i: DataIssuer) => i.id === id)
+  if (!issuer) throw new Error(`No issuer found for id: ${id}`)
+  const {publicJwk} = await getCryptoKeysByIssuerId(id)
+
   return {
-    id: ISSUER_ID,
-    kid: KID,
+    id,
+    kid: issuer.kid,
     publicKeyJwk: publicJwk,
   }
 }

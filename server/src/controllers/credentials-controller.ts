@@ -4,20 +4,21 @@ import { VerifiableCredentialSchema, type VerifiableCredential } from "mini-vc-w
 import { nanoid } from "nanoid"
 import { isDeepStrictEqual } from "util"
 import { readAllCredentials, writeAllCredentials } from "../utils/credentials-file-utils.js"
-import { ensureKeys, issuerMeta } from "../utils/jwks-utils.js"
+import { getCryptoKeysByIssuerId, issuerMeta } from "../utils/jwks-utils.js"
 import { nowIso } from "../utils/now-iso.js"
 
 // issue a credential
 export const createCredential = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { type = "VerifiableCredential", claims = {"no": "content"}, subject = "did:example:no-set" } = req.body || {}
+    const { type = "VerifiableCredential", claims = {"no": "content"}, subject = "did:example:no-set", issuer = "did:example:not-set" } = req.body || {}
     const id = nanoid()
     const issuedAt = nowIso()
-    const { privateKey, publicJwk } = await ensureKeys()
+    const { privateKey } = await getCryptoKeysByIssuerId(issuer)
+    const {kid} = await issuerMeta(issuer)
 
-    const credential = {
+    const credential: VerifiableCredential = {
       id,
-      issuer: issuerMeta(publicJwk),
+      issuer,
       type: ["VerifiableCredential", type],
       subject,
       issuedAt,
@@ -26,7 +27,7 @@ export const createCredential = async (req: Request, res: Response, next: NextFu
 
     const payload = new TextEncoder().encode(JSON.stringify(credential))
     const jws = await new CompactSign(payload)
-      .setProtectedHeader({ alg: "EdDSA", kid: credential.issuer.kid || "" })
+      .setProtectedHeader({ alg: "EdDSA", kid })
       .sign(privateKey)
 
     const stored: VerifiableCredential = { ...credential, proof: { type: "Ed25519Signature2018", jws } }
@@ -85,12 +86,17 @@ export const deleteCredential = async (req: Request, res: Response, next: NextFu
 export const verifyCredential = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const data = req.body || {}
+    // check for valid credential format
     const credential = VerifiableCredentialSchema.parse(data)
     const { jws } = credential.proof
-    const { publicKey } = await ensureKeys()
+    // check existing issuer
+    const { publicKey } = await getCryptoKeysByIssuerId(credential.issuer)
+    // ceck existing subject
+    await issuerMeta(credential.subject) // throws if not found
+    // verify signature
     const { payload, protectedHeader } = await compactVerify(jws, publicKey)
+    // check payload integrity
     const decoded = JSON.parse(new TextDecoder().decode(payload))
-
     const { proof, ...plain } = credential
     const equal = isDeepStrictEqual(plain, decoded)
     if (!equal) return res.json({ valid: false, error: "payload_mismatch", header: protectedHeader })
