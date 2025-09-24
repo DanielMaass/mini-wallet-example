@@ -10,7 +10,7 @@ import { nowIso } from "../utils/now-iso.js"
 // issue a credential
 export const createCredential = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { type = "VerifiableCredential", claims = {"no": "content"}, subject = "did:example:no-set", issuer = "did:example:not-set" } = req.body || {}
+    const { type = "VerifiableCredential", claims = {"no": "content"}, subject = "", issuer = "" } = req.body || {}
     const id = nanoid()
     const issuedAt = nowIso()
     const { privateKey } = await getCryptoKeysByIssuerId(issuer)
