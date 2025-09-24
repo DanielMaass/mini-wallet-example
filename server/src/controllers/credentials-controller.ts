@@ -16,7 +16,7 @@ export const createCredential = async (req: Request, res: Response, next: NextFu
     const { privateKey } = await getCryptoKeysByIssuerId(issuer)
     const { kid } = await issuerMeta(issuer)
 
-    const credential = {
+    const credential: Omit<VerifiableCredential, "proof"> = {
       id,
       issuer,
       type: ["VerifiableCredential", type],
