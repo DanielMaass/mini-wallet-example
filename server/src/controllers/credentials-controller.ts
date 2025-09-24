@@ -97,12 +97,8 @@ export const verifyCredential = async (req: Request, res: Response, next: NextFu
     // check for valid credential format
     const credential = VerifiableCredentialSchema.parse(data)
     const { jws } = credential.proof
-    let subjectId = "";
-    if (typeof credential.credentialSubject.id === "string") {
-      subjectId = credential.credentialSubject.id;
-    } else if (credential.credentialSubject.id !== undefined) {
-      return res.json({ valid: false, error: "credentialSubject.id must be a string" });
-    }
+    const subjectId = credential.credentialSubject.id ?? ""
+
     // check existing issuer
     const { publicKey } = await getCryptoKeysByIssuerId(credential.issuer)
     // check existing subject

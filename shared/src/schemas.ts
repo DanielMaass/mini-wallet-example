@@ -36,7 +36,7 @@ export const VerifiableCredentialSchema = z.object({
   type: z.array(z.string()),
   issuer: z.string(),
   issuanceDate: z.string(),
-  credentialSubject: z.record(z.string(), z.unknown()),
+  credentialSubject: z.record(z.string(), z.string()),
   proof: CredentialProofSchema,
 })
 
