@@ -16,7 +16,6 @@ const dataDir = path.join(__dirname, "../data")
 const keysFile = path.join(dataDir, "keys.json")
 
 export const initData = async () => {
-
   try {
     // check if data key exists
     await fs.mkdir(dataDir, { recursive: true })

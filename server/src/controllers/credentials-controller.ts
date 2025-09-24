@@ -89,7 +89,7 @@ export const verifyCredential = async (req: Request, res: Response, next: NextFu
     const { jws } = credential.proof
     // check existing issuer
     const { publicKey } = await getCryptoKeysByIssuerId(credential.issuer)
-    // ceck existing subject
+    // check existing subject
     await issuerMeta(credential.subject) // throws if not found
     // verify signature
     const { payload, protectedHeader } = await compactVerify(jws, publicKey)
